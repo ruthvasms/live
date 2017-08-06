@@ -90,12 +90,14 @@ module.exports = {
           .then(() => {
             User.checkPermission(user, loginas)
             .then(() =>{
+              var tokenGen = jwToken.issue({
+                id: user.id,
+                org_id: user.org_id,
+                inst_id: user.inst_id
+              });
+              req.session.token = tokenGen;
               return res.json({
-                token: jwToken.issue({
-                  id: user.id,
-                  org_id: user.org_id,
-                  inst_id: user.inst_id
-                })
+                token: tokenGen
               });
             })
             .catch((err) => {

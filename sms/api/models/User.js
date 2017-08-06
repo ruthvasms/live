@@ -1,17 +1,18 @@
 /**
- * User.js
- *
- * @description :: TODO: You might write a short summary of how this model works and what it represents here.
- * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
- */
+* User.js
+*
+* @description :: TODO: You might write a short summary of how this model works and what it represents here.
+* @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
+*/
 var bcrypt = require('bcrypt');
 
 
 module.exports = {
   ORG_ADMIN: 1,
   INST_ADMIN: 2,
-  PARENT: 3,
-  STUDENT:4,
+  FACULTY: 3,
+  PARENT: 4,
+  STUDENT:5,
   schema: true,
   attributes: {
     username:{
@@ -49,6 +50,10 @@ module.exports = {
       type: 'boolean',
       required: true
     },
+    is_faculty:{
+      type: 'boolean',
+      required: true
+    },
     is_parent:{
       type: 'boolean',
       required: true
@@ -66,7 +71,11 @@ module.exports = {
       required: false
     }
   },
-
+  toJSON: function toJSON() {
+    var obj = this.toObject();
+    delete obj.password;
+    return obj;
+  },
   beforeCreate: function(values, next) {
     bcrypt.hash(values.password, 10, function(err, hash) {
       if(err) return next(err);
@@ -102,17 +111,20 @@ module.exports = {
       var permitted = false;
       switch (permission) {
         case User.ORG_ADMIN:
-          if (user.is_org_admin) permitted = true;
-          break;
+        if (user.is_org_admin) permitted = true;
+        break;
         case User.INST_ADMIN:
-          if (user.is_inst_admin) permitted = true;
-          break;
+        if (user.is_inst_admin) permitted = true;
+        break;
+        case User.FACULTY:
+        if (user.is_faculty) permitted = true;
+        break;
         case User.PARENT:
-          if (user.is_parent) permitted = true;
-          break;
+        if (user.is_parent) permitted = true;
+        break;
         case User.STUDENT:
-          if (user.is_student) permitted = true;
-          break;
+        if (user.is_student) permitted = true;
+        break;
       }
       if (permitted){
         return resolve();
