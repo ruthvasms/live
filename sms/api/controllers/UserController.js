@@ -114,7 +114,21 @@ module.exports = {
       });
     }
   },
+  logout(req, res){
+    if (req.session.token){
+      delete req.session.token;
+      return res.json({
+        status: 200,
+        message: "loggedout!!"
+      });
+    }else{
+      return res.json('404', {
+        status: -404,
+        message: "No login found"
+      });
+    }
 
+  },
   getUserProfile(req, res){
     const data = req.body;
     if (data.username){
@@ -145,6 +159,39 @@ module.exports = {
         console.log(err);
       });
     }
+  },
+
+  checkAvailability(req, res){
+    var criteria = null;
+    if (req.param('username')){
+      criteria = req.param('username');
+    }else if (req.param('email')){
+      criteria = req.param('email');
+    }
+    User.findOne({
+      or:[
+        { username: criteria},
+        {email: criteria}
+      ]
+    })
+    .then((user) => {
+      if (!user){
+        return res.json({
+          status: 200,
+          message: "user doesn't exists!!",
+          available: true
+        });
+      } else {
+        return res.json({
+          status: 200,
+          message: "user already exists!!",
+          available: false
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
   }
 
 };

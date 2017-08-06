@@ -57,6 +57,7 @@ module.exports.policies = {
   'UserController': { // Name of your controller
     'create': true, // We dont need authorization here, allowing public access
     'login':true,
-    'getUserProfile': true
+    'getUserProfile': true,
+    'checkAvailability': true
   }
 };
