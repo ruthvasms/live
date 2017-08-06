@@ -64,13 +64,6 @@ module.exports = {
       var username = data.username;
       var password = data.password;
       var loginas = data.loginas;
-      var rand = function() {
-        return Math.random().toString(36).substr(2); // remove `0.`
-      };
-      var token = function() {
-        return rand() + rand(); // to make it longer
-      };
-      var tokenGen = null;
       User.findOne({
         or:[
           { username: username},
@@ -120,7 +113,38 @@ module.exports = {
         message: "Details are not provided!!"
       });
     }
+  },
 
+  getUserProfile(req, res){
+    const data = req.body;
+    if (data.username){
+      var username = data.username;
+      User.findOne({
+        or:[
+          { username: username},
+          {email: username}
+        ]
+      })
+      .then((user) => {
+        if (!user){
+          return res.json('404',{
+            status: -404,
+            message: "user doesn't exists!!"
+          });
+        } else {
+          return res.json({
+            is_org_admin: user.is_org_admin,
+            is_inst_admin: user.is_inst_admin,
+            is_faculty: user.is_faculty,
+            is_parent: user.is_parent,
+            is_student: user.is_student
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    }
   }
 
 };
