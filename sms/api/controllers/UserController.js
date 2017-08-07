@@ -53,7 +53,7 @@ module.exports = {
       }
     })
     .catch((err) => {
-      console.log(err);
+      sails.log.error(err);
     });
 
 
@@ -90,6 +90,8 @@ module.exports = {
               });
               req.session.token = tokenGen;
               return res.json({
+                status: 200,
+                message: "sucessfully logged in!!",
                 token: tokenGen
               });
             })
@@ -97,12 +99,15 @@ module.exports = {
               res.status('401');
               return res.json({
                 status: -401,
-                message: "You dont have permission to access this page!!"
+                message: "Invalid Login!!"
               });
             });
           })
           .catch((err) => {
-            return res.forbidden();
+            return res.json('401',{
+                status: -401,
+                message: "Invalid Login!!"
+            });
           });
         }
       });
@@ -130,9 +135,9 @@ module.exports = {
 
   },
   getUserProfile(req, res){
-    const data = req.body;
-    if (data.username){
-      var username = data.username;
+    var username = req.param('username');
+    if (username){
+      var username = username;
       User.findOne({
         or:[
           { username: username},
@@ -156,18 +161,13 @@ module.exports = {
         }
       })
       .catch((err) => {
-        console.log(err);
+        sails.log.error(err);
       });
     }
   },
 
   checkAvailability(req, res){
-    var criteria = null;
-    if (req.param('username')){
-      criteria = req.param('username');
-    }else if (req.param('email')){
-      criteria = req.param('email');
-    }
+    var criteria = req.param('criteria');
     User.findOne({
       or:[
         { username: criteria},
@@ -176,8 +176,8 @@ module.exports = {
     })
     .then((user) => {
       if (!user){
-        return res.json({
-          status: 200,
+        return res.json('404',{
+          status: -404,
           message: "user doesn't exists!!",
           available: true
         });
@@ -190,7 +190,7 @@ module.exports = {
       }
     })
     .catch((err) => {
-      console.log(err);
+      sails.log.error(err);
     });
   }
 

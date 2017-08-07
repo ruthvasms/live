@@ -14,7 +14,7 @@ module.exports = (req, res, next) => {
   } else {
     return res.json(401, {
       status: -401,
-      err: 'Not logged in!!'
+      message: 'Not logged in!!'
     });
   }
 

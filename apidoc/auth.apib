@@ -1,0 +1,161 @@
+FORMAT: 1A
+
+# Group Auth
+
+## Create - SignUp [/user/create]
+
+### SignUp [POST]
+
++ Request 201 (application/json)
+
+        {
+            "username":"tilakputta",
+            "email":"putta.tilak@gmail.com",
+            "firstName":"tilak",
+            "lastName":"putta",
+            "mobile": 8247778424,
+            "confirmPassword":"imathsage",
+            "password":"imathsage",
+            "is_org_admin": true,
+            "is_inst_admin": false,
+            "is_faculty": false,
+            "is_parent": true,
+            "is_student": false,
+            "org_name": "GRIET",
+            "inst_id": "59867fcb6a190e925729ef29"
+        }
+
++ Response 201 (application/json)
+
+        {
+            "status": 201,
+            "message": "User created!!"
+        }
+
++ Response 403 (application/json)
+
+        {
+            "status": -403,
+            "message": "User already exists!!"
+        }
+
++ Response 406 (application/json)
+
+        {
+            "status": -406,
+            "message": "partial content!!"
+        }
+
+## Login [/user/login]
+
+### Login [POST]
+
++ Request 200 (application/json)
+
+        {
+        	"username":"putta.tilak@gmail.com",
+        	"password":"imathsage",
+        	"loginas": 4
+        }
+
++ Response 200 (application/json)
+
+        {
+            "status": 200,
+            "message": "sucessfully logged in!!",
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU5ODhlMmVmMzk4ZDFiNzYwYzg4NTU1NSIsIm9yZ19pZCI6IjU5ODhlMmVmMzk4ZDFiNzYwYzg4NTU1NCIsImluc3RfaWQiOiIxIiwiaWF0IjoxNTAyMTQzNzI3LCJleHAiOjE1MDQ3MzU3Mjd9.K8Cw7tlJhDuydd8cO8ioEMrApptv7huDirijEKTBnPM"
+        }
+
++ Request 401 (application/json)
+
+        {
+        	"username":"putta.tilak@gmail.com",
+        	"password":"imaxsage",
+        	"loginas": 4
+        }
+
++ Response 401 (application/json)
+
+        {
+            "status": -401,
+            "message": "Invalid Login!!"
+        }
+
++ Request 400 (application/json)
+
+        {
+        	"username":"putta.tilak@gmail.com",
+        	"password":"imathsage"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "status": -400,
+            "message": "Details are not provided!!"
+        }
+
+## User Profile [/user/getUserProfile{?username}]
+
+### User Profile [GET]
+
++ Parameters
+    + username (required, `tilakputta`)
+
++ Response 200 (application/json)
+
+        {
+            "is_org_admin": true,
+            "is_inst_admin": false,
+            "is_faculty": false,
+            "is_parent": true,
+            "is_student": false
+        }
+
++ Response 404 (application/json)
+
+        {
+            "status": -404,
+            "message": "user doesn't exists!!"
+        }
+
+## Check Availabilty [/user/checkAvailability{?criteria}]
+
+## Check Availabilty [GET]
+
++ Parameters
+    + criteria (required, `tilakputta`) - criteria can be username or email
+
++ Response 404 (application/json)
+
+        {
+            "status": -404,
+            "message": "user doesn't exists!!",
+            "available": true
+        }
+
++ Response 200 (application/json)
+
+        {
+            "status": 200,
+            "message": "user already exists!!",
+            "available": false
+        }
+
+## Logout [/user/logout]
+
+### Logout [POST]
+
++ Response 200 (application/json)
+
+        {
+            "status": 200,
+            "message": "loggedout!!"
+        }
+
++ Response 401 (application/json)
+
+        {
+            "status": -401,
+            "message": "Not logged in!!"
+        }
