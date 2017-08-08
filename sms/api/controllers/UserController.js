@@ -14,7 +14,7 @@ module.exports = {
   */
   create(req, res) {
     const data = req.body;
-    if (data.paasword != data.confirmPassowrd) return res.badRequest("Password not the same");
+    if (data.password != data.confirmPassword) return res.badRequest("Password not the same");
     if (!data.ord_id && !data.inst_id){
       res.status('406');
       return res.json({
