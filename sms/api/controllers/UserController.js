@@ -7,22 +7,21 @@
 
 module.exports = {
 
-
-
-  /**
-  * `UserController.login()`
-  */
-  create(req, res) {
+  signup(req, res) {
     const data = req.body;
-    if (data.password != data.confirmPassword) return res.badRequest("Password not the same");
-    if (!data.ord_id && !data.inst_id){
+    if (data.password != data.confirmPassword){
+      return res.json('400',{
+        status: -400,
+        message: "Bad Request!!"
+      });
+    }
+    if ((!data.org_id && !data.org_name) || !data.inst_id){
       res.status('406');
       return res.json({
         status: -406,
         message: "partial content!!"
       });
     }
-    // User.beforeCreate(data,function(err){});
 
     User.findOne({
       or : [
@@ -48,12 +47,19 @@ module.exports = {
         })
         .catch((err) => {
           sails.log.error(err);
-          return res.serverError("Something went wrong");
+          return res.json('500', {
+            status: -500,
+            message: "Internal Server Error"
+          });
         });
       }
     })
     .catch((err) => {
       sails.log.error(err);
+      return res.json('500', {
+        status: -500,
+        message: "Internal Server Error"
+      });
     });
 
 
@@ -71,7 +77,11 @@ module.exports = {
         ]
       }).exec(function (err, user) {
         if (err){
-          return res.negotiate(err);
+          sails.log.error(err);
+          return res.json('500', {
+            status: -500,
+            message: "Internal Server Error"
+          });
         }else if (!user) {
           res.status('401');
           return res.json({
@@ -99,7 +109,7 @@ module.exports = {
               res.status('401');
               return res.json({
                 status: -401,
-                message: "Invalid Login!!"
+                message: "Not Authorized Login!!"
               });
             });
           })
@@ -137,7 +147,6 @@ module.exports = {
   getUserProfile(req, res){
     var username = req.param('username');
     if (username){
-      var username = username;
       User.findOne({
         or:[
           { username: username},
@@ -152,6 +161,8 @@ module.exports = {
           });
         } else {
           return res.json({
+            status: 200,
+            message: "User profile is retrieved!!",
             is_org_admin: user.is_org_admin,
             is_inst_admin: user.is_inst_admin,
             is_faculty: user.is_faculty,
@@ -162,36 +173,56 @@ module.exports = {
       })
       .catch((err) => {
         sails.log.error(err);
+        return res.json('500', {
+          status: -500,
+          message: "Internal Server Error"
+        });
+      });
+    }else{
+      return res.json('400', {
+        status: -400,
+        message: "Bad Request!!"
       });
     }
   },
 
   checkAvailability(req, res){
     var criteria = req.param('criteria');
-    User.findOne({
-      or:[
-        { username: criteria},
-        {email: criteria}
-      ]
-    })
-    .then((user) => {
-      if (!user){
-        return res.json('404',{
-          status: -404,
-          message: "user doesn't exists!!",
-          available: true
+    if (criteria){
+      User.findOne({
+        or:[
+          { username: criteria},
+          {email: criteria}
+        ]
+      })
+      .then((user) => {
+        if (!user){
+          return res.json('404',{
+            status: -404,
+            message: "user doesn't exists!!",
+            available: true
+          });
+        } else {
+          return res.json({
+            status: 200,
+            message: "user already exists!!",
+            available: false
+          });
+        }
+      })
+      .catch((err) => {
+        sails.log.error(err);
+        return res.json('500', {
+          status: -500,
+          message: "Internal Server Error"
         });
-      } else {
-        return res.json({
-          status: 200,
-          message: "user already exists!!",
-          available: false
-        });
-      }
-    })
-    .catch((err) => {
-      sails.log.error(err);
-    });
+      });
+    }else{
+      return res.json('400', {
+        status: -400,
+        message: "Bad Request!!"
+      });
+    }
   }
 
 };
