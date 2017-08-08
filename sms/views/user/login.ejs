@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+
+<head>
+  <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+</head>
+
+<body ng-app = "myapp">
+<form name = "studentForm" method='post' action='/user/login'>
+<input name = "firstname" type = "text" ng-model = "firstName" required>
+<input name = "lastname" type = "text" ng-model = "lastName" required>
+<input name = "email" type = "email" ng-model = "email" required>
+<button ng-click = "reset()">Reset</button>
+</form>
+<script>
+   function studentController($scope) {
+      $scope.reset = function(){
+         $scope.firstName = "Mahesh";
+         $scope.lastName = "Parashar";
+         $scope.email = "MaheshParashar@tutorialspoint.com";
+      }
+
+      $scope.reset();
+   }
+</script>
+
+</body>
+</html>

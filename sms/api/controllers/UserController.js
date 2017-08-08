@@ -192,6 +192,14 @@ module.exports = {
     .catch((err) => {
       sails.log.error(err);
     });
-  }
+},
+
+checkLoginStatus(req, res){
+    return res.json({
+        status: 200,
+        message: "loggedin!!",
+        login: true
+    });
+}
 
 };
