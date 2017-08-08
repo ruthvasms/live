@@ -55,7 +55,9 @@ module.exports.policies = {
 
   '*': ['isAuthorized'], // Everything resctricted here
   'UserController': { // Name of your controller
-    'create': true, // We dont need authorization here, allowing public access
-    'login':true
+    // 'create': true, // We dont need authorization here, allowing public access
+    'login':true,
+    'getUserProfile': true,
+    'checkAvailability': true
   }
 };

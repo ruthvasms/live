@@ -3,8 +3,8 @@ module.exports = (req, res, next) => {
   let token;
 
 
-  if (req.headers && req.headers.token) {
-    token = req.headers.token;
+  if (req.session && req.session.token) {
+    token = req.session.token;
     if (token.length <= 0) return res.json(401, {err: 'Format is Authorization: Bearer [token]'});
 
   } else if (req.param('token')) {
@@ -12,7 +12,10 @@ module.exports = (req, res, next) => {
     // We delete the token from param to not mess with blueprints
     delete req.query.token;
   } else {
-    return res.json(401, {err: 'No Authorization header was found'});
+    return res.json(401, {
+      status: -401,
+      message: 'Not logged in!!'
+    });
   }
 
   jwToken.verify(token, function (err, token) {
