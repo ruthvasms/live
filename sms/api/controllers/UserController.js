@@ -55,6 +55,7 @@ module.exports = {
       }
     })
     .catch((err) => {
+
       sails.log.error(err);
       return res.json('500', {
         status: -500,
@@ -160,6 +161,7 @@ module.exports = {
             message: "user doesn't exists!!"
           });
         } else {
+
           return res.json({
             status: 200,
             message: "User profile is retrieved!!",
@@ -169,9 +171,11 @@ module.exports = {
             is_parent: user.is_parent,
             is_student: user.is_student
           });
+
         }
       })
       .catch((err) => {
+
         sails.log.error(err);
         return res.json('500', {
           status: -500,
@@ -211,6 +215,7 @@ module.exports = {
         }
       })
       .catch((err) => {
+        
         sails.log.error(err);
         return res.json('500', {
           status: -500,
